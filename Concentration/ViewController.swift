@@ -20,12 +20,25 @@ class ViewController: UIViewController {
 //    [C2-2]
     private(set) var flipCount = 0 {
         didSet {
-            flipCountLabel.text = "Flips: \(flipCount)"
+            updateFlipCountLabel()
         }
     }
     
+    private func updateFlipCountLabel () {
+        let attributes: [NSAttributedStringKey:Any] = [
+            .strokeWidth : 5.0,
+            .strokeColor : #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
+        ]
+        let attributeString = NSAttributedString(string: "Flips: \(flipCount)", attributes: attributes)
+        flipCountLabel.attributedText = attributeString
+    }
+    
 //    [C2-3]
-    @IBOutlet private weak var flipCountLabel: UILabel!
+    @IBOutlet private weak var flipCountLabel: UILabel! {
+        didSet {
+            updateFlipCountLabel() 
+        }
+    }
     
     @IBOutlet private var cardButtons: [UIButton]!
     
@@ -49,25 +62,31 @@ class ViewController: UIViewController {
                 button.setTitle("", for: UIControlState.normal)
                 button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 0) : #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
             }
-        }
+        } 
     }
 //    [C2-5]
-    private var emojiChoices = ["🦇", "😱", "🙀", "👿", "🎃", "👻", "🍭", "🍬", "🍎"]
-
+    // private var emojiChoices = ["🦇", "😱", "🙀", "👿", "🎃", "👻", "🍭", "🍬", "🍎"]
+    
+    private var emojiChoices = "🦇😱🙀👿🎃👻🍭🍬🍎"
+ 
     
 //    [C2-5]
-    private var emoji = [Int:String]()
+    private var emoji = [Card:String]()
     
 //    [C2-6]
     private func emoji(for card: Card) -> String {
-        if emoji[card.identifier] == nil, emojiChoices.count > 0 {
+        if emoji[card] == nil, emojiChoices.count > 0 {
             
 //    [C3-2]
 //            let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))
-            emoji[card.identifier] = emojiChoices.remove(at: emojiChoices.count.arc4random)
+            let randomStringIndex = emojiChoices.index(emojiChoices.startIndex, offsetBy: emojiChoices.count.arc4random)
+            emoji[card] = String(emojiChoices.remove(at: randomStringIndex))
         }
-        return emoji[card.identifier] ?? "?"
+        return emoji[card] ?? "?"
     }
+    let attribute: [NSAttributedStringKey: Any] = [
+        .strokeColor: UIColor.orange
+        ]
 }
 //    [C3-1]
 extension Int {
